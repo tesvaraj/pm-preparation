@@ -92,4 +92,20 @@ export const api = {
     if (!response.ok) throw new Error('Failed to get attempt');
     return response.json();
   },
+
+  async getGlobalLeaderboard() {
+    const response = await fetch(`${API_URL}/leaderboard/global`);
+    if (!response.ok) throw new Error('Failed to get leaderboard');
+    return response.json();
+  },
+
+  async getFriendsLeaderboard(token) {
+    const response = await fetch(`${API_URL}/leaderboard/friends`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error('Failed to get friends leaderboard');
+    return response.json();
+  },
 };
