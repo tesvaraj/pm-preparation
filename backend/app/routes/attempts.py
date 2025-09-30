@@ -8,6 +8,7 @@ from ..models import Attempt, User, Question
 from ..schemas import AttemptResponse
 from ..dependencies import get_current_user
 from ..services.transcription import transcribe_audio
+from ..services.evaluation import evaluate_pm_answer
 
 router = APIRouter(prefix="/attempts", tags=["attempts"])
 
@@ -52,15 +53,28 @@ async def create_attempt(
     db.commit()
     db.refresh(new_attempt)
 
-    # Transcribe audio asynchronously (in background for now)
+    # Transcribe audio and evaluate
     try:
+        # Step 1: Transcribe
         transcript = await transcribe_audio(file_path)
         new_attempt.transcript = transcript
+        db.commit()
+
+        # Step 2: Evaluate with Claude
+        evaluation = await evaluate_pm_answer(
+            question.title,
+            question.description,
+            transcript
+        )
+        new_attempt.score = evaluation.get("overall_score")
+        new_attempt.feedback = evaluation
         db.commit()
         db.refresh(new_attempt)
     except Exception as e:
         # Log error but don't fail the request
-        print(f"Transcription error: {str(e)}")
+        print(f"Processing error: {str(e)}")
+        db.commit()
+        db.refresh(new_attempt)
 
     return new_attempt
 

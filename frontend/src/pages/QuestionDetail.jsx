@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import AudioRecorder from '../components/AudioRecorder';
 
-export default function QuestionDetail({ questionId, onBack }) {
+export default function QuestionDetail({ questionId, onBack, onResults }) {
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,12 +37,11 @@ export default function QuestionDetail({ questionId, onBack }) {
     setSubmitting(true);
     try {
       const token = localStorage.getItem('token');
-      await api.submitAttempt(questionId, audioBlob, token);
-      alert('Answer submitted successfully! (Transcription and evaluation coming soon)');
-      onBack();
+      const attempt = await api.submitAttempt(questionId, audioBlob, token);
+      // Navigate to results page
+      onResults(attempt.id);
     } catch (err) {
       alert(`Error submitting: ${err.message}`);
-    } finally {
       setSubmitting(false);
     }
   };
@@ -54,7 +53,7 @@ export default function QuestionDetail({ questionId, onBack }) {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <button onClick={onBack} style={{ marginBottom: '20px' }}>
-        ê Back to Questions
+        ÔøΩ Back to Questions
       </button>
 
       <div style={{

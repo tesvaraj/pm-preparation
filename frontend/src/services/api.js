@@ -82,4 +82,14 @@ export const api = {
     }
     return response.json();
   },
+
+  async getAttempt(attemptId, token) {
+    const response = await fetch(`${API_URL}/attempts/${attemptId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error('Failed to get attempt');
+    return response.json();
+  },
 };

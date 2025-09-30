@@ -4,13 +4,15 @@ import Register from './pages/Register'
 import Questions from './pages/Questions'
 import CreateQuestion from './pages/CreateQuestion'
 import QuestionDetail from './pages/QuestionDetail'
+import AttemptResults from './pages/AttemptResults'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
-  const [view, setView] = useState('questions') // 'questions', 'create', or 'detail'
+  const [view, setView] = useState('questions') // 'questions', 'create', 'detail', or 'results'
   const [selectedQuestion, setSelectedQuestion] = useState(null)
+  const [selectedAttempt, setSelectedAttempt] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -49,6 +51,16 @@ function App() {
         {view === 'detail' && selectedQuestion && (
           <QuestionDetail
             questionId={selectedQuestion}
+            onBack={() => setView('questions')}
+            onResults={(attemptId) => {
+              setSelectedAttempt(attemptId);
+              setView('results');
+            }}
+          />
+        )}
+        {view === 'results' && selectedAttempt && (
+          <AttemptResults
+            attemptId={selectedAttempt}
             onBack={() => setView('questions')}
           />
         )}
