@@ -34,4 +34,32 @@ export const api = {
     if (!response.ok) throw new Error('Failed to get user info');
     return response.json();
   },
+
+  async getQuestions() {
+    const response = await fetch(`${API_URL}/questions/`);
+    if (!response.ok) throw new Error('Failed to get questions');
+    return response.json();
+  },
+
+  async createQuestion(title, description, category, token) {
+    const response = await fetch(`${API_URL}/questions/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, description, category }),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to create question');
+    }
+    return response.json();
+  },
+
+  async getQuestion(id) {
+    const response = await fetch(`${API_URL}/questions/${id}`);
+    if (!response.ok) throw new Error('Failed to get question');
+    return response.json();
+  },
 };

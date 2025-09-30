@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Questions from './pages/Questions'
+import CreateQuestion from './pages/CreateQuestion'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
+  const [view, setView] = useState('questions') // 'questions' or 'create'
+  const [selectedQuestion, setSelectedQuestion] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -17,12 +21,31 @@ function App() {
     setIsAuthenticated(false)
   }
 
+  const handleQuestionCreated = () => {
+    setView('questions')
+  }
+
+  const handleSelectQuestion = (id) => {
+    setSelectedQuestion(id)
+    // TODO: Navigate to question detail/recording page
+    alert(`Selected question ${id} - recording page coming next!`)
+  }
+
   if (isAuthenticated) {
     return (
-      <div style={{ padding: '20px' }}>
-        <h1>PM Interview Practice</h1>
-        <p>Welcome! You're logged in.</p>
-        <button onClick={handleLogout}>Logout</button>
+      <div>
+        <nav style={{ padding: '10px', borderBottom: '1px solid #ddd', backgroundColor: '#f5f5f5' }}>
+          <h1 style={{ display: 'inline', marginRight: '20px' }}>PM Interview Practice</h1>
+          <button onClick={() => setView('questions')} style={{ marginRight: '10px' }}>
+            Questions
+          </button>
+          <button onClick={() => setView('create')} style={{ marginRight: '10px' }}>
+            Create Question
+          </button>
+          <button onClick={handleLogout} style={{ float: 'right' }}>Logout</button>
+        </nav>
+        {view === 'questions' && <Questions onSelectQuestion={handleSelectQuestion} />}
+        {view === 'create' && <CreateQuestion onQuestionCreated={handleQuestionCreated} />}
       </div>
     )
   }
