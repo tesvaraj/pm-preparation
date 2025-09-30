@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import auth, questions
+from .routes import auth, questions, attempts
 
 app = FastAPI(title="PM Interview Practice API")
 
@@ -16,6 +16,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router)
 app.include_router(questions.router)
+app.include_router(attempts.router)
 
 @app.get("/")
 async def root():

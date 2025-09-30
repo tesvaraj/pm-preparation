@@ -3,12 +3,13 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Questions from './pages/Questions'
 import CreateQuestion from './pages/CreateQuestion'
+import QuestionDetail from './pages/QuestionDetail'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
-  const [view, setView] = useState('questions') // 'questions' or 'create'
+  const [view, setView] = useState('questions') // 'questions', 'create', or 'detail'
   const [selectedQuestion, setSelectedQuestion] = useState(null)
 
   useEffect(() => {
@@ -27,8 +28,7 @@ function App() {
 
   const handleSelectQuestion = (id) => {
     setSelectedQuestion(id)
-    // TODO: Navigate to question detail/recording page
-    alert(`Selected question ${id} - recording page coming next!`)
+    setView('detail')
   }
 
   if (isAuthenticated) {
@@ -46,6 +46,12 @@ function App() {
         </nav>
         {view === 'questions' && <Questions onSelectQuestion={handleSelectQuestion} />}
         {view === 'create' && <CreateQuestion onQuestionCreated={handleQuestionCreated} />}
+        {view === 'detail' && selectedQuestion && (
+          <QuestionDetail
+            questionId={selectedQuestion}
+            onBack={() => setView('questions')}
+          />
+        )}
       </div>
     )
   }
